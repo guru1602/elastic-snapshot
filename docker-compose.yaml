@@ -1,0 +1,37 @@
+version: '3'
+services: 
+  elastic_register_repo:
+    env_file: .env
+    container_name: register-repo
+    build:
+      context: .
+      dockerfile: Dockerfile.register
+    environment: # specify the env-variables here
+      # secret ones in .env file or system
+      ELASTIC_HOST_NAME: ${ELASTIC_HOST_NAME}
+      ELASTIC_SEARCH_NAME: ${ELASTIC_SEARCH_NAME}
+      REPOSITORY_NAME: ${REPOSITORY_NAME}
+      AWS_REGION: ${AWS_REGION}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_S3_BUCKET: ${AWS_S3_BUCKET}
+      IAM_SNAPSHOT_ROLE: ${IAM_SNAPSHOT_ROLE}
+      # sometimes the console won't show print messages,
+      # using PYTHONUNBUFFERED: 1 can fix this
+      PYTHONUNBUFFERED: 1
+  elastic_take_snapshot:
+    env_file: .env
+    container_name: snapshot
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment: 
+      ELASTIC_HOST_NAME: ${ELASTIC_HOST_NAME}
+      ELASTIC_SEARCH_NAME: ${ELASTIC_SEARCH_NAME}
+      REPOSITORY_NAME: ${REPOSITORY_NAME}
+      AWS_REGION: ${AWS_REGION}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      # sometimes the console won't show print messages,
+      # using PYTHONUNBUFFERED: 1 can fix this
+      PYTHONUNBUFFERED: 1
